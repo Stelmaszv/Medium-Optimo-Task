@@ -1,4 +1,4 @@
-from django.views.generic import ListView
+from django.views.generic import ListView, DetailView
 
 from app.models import Article, Tag
 
@@ -14,3 +14,7 @@ class TagsListView(ListView):
     template_name = 'tags_list.html'
     paginate_by = 5
     ordering = ['-create_at']
+
+class ArticleDetailView(DetailView):
+    model = Article
+    template_name = 'article.html'

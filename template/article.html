@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+    <div class="offset-1 col-10">
+        <div class="row">
+            <div class="col-10" style="padding:10px;">
+                <h1>{{ object.title }}</h1>
+            </div>
+            {% if object.Author.User == request.user %}
+            <div class="col-2" style="padding:10px;">
+                <a class="nav-link active" aria-current="page" href="">
+                    <button type="button" class="btn btn-primary">Edit</button>
+                </a>
+            </div>
+            {% endif %}
+        </div>
+        <div>
+            <div class="row" style="padding:10px;">
+                <div class="col-4"><i>Author</i>      <b>{{ object.Author }}</b></div>
+                <div class="col-4"><i>Comments</i>    <b>{{ object.comments_set.count }}</b></div>
+                <div class="col-4"><i>Create At</i>   <b>{{ object.create_at }}</b></div>
+            </div>
+        </div>
+        {% if object.url %}
+        <div class="row">
+            <div class="col-6">
+                <div class="ratio ratio-16x9">
+                    <iframe title="{{ object.title }}" src="https://www.youtube.com/embed/{{object.get_you_tube_url}}"></iframe>
+                </div>
+            </div>
+            <div class="col-6" style="padding:10px;">
+                <div class="ratio ratio-16x9">
+                    <img src="/{{ object.photo }}"  alt="{{ object.title }}">
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        <p style="text-align: justify;">{{ object.content }}</p>
+        {% for tag in object.tags.all %}
+            <button class="btn btn-sm btn-outline-secondary" type="button">{{tag}}</button>
+        {% endfor %}
+        <div>
+            <div class="row">
+                <div class="col-10">
+                    <h1>Comments</h1>
+                </div>
+                <div class="col-2">
+                    {% if request.user.is_authenticated %}
+                        <a class="nav-link active " aria-current="page" href="">
+                            <button type="button" class="btn btn-primary">New</button>
+                        </a>
+                    {% endif %}
+                </div>
+                {% for comment in object.Comments.all %}
+                    <div>
+                        <div class="row">
+                            <div class="col-9"><b>{{ comment.Author }}</b></div>
+                            <div class="col-3"><b>{{ comment.create_at }}</b></div>
+                        </div>
+                        <div style="padding:5px">
+                            <p style="text-align: justify;"><em>{{comment.content}}</em></p>
+                        </div>
+                    </div>
+                {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
