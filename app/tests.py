@@ -1,8 +1,7 @@
-from django.contrib.auth import login
 from django.test import TestCase,Client
 from django.urls import reverse, resolve
 
-from app.views import ArticleListView, TagsListView, ArticleDetailView, NewComment, ArticleCreateView
+from app.views import ArticleListView, TagsListView, ArticleDetailView, NewComment, ArticleCreateView, ArticleUpdateView
 from .models import Article,Comments,Author,Tag
 from django.contrib.auth.models import User
 #model tests
@@ -132,6 +131,7 @@ class AuthorTest(TestCase):
         self.assertEqual(AuthorObj.name, self.author_name)
         self.assertEqual(AuthorObj.surname, self.author_surname)
         self.assertEqual(AuthorObj.User, self.UserObj)
+
 #views_test
 class Test_ArticleList(TestCase):
 
@@ -211,7 +211,6 @@ class Test_Tag(TestCase):
         self.generate_objects()
         respanse = self.client.get(self.list)
         self.assertEqual(len(respanse.context['tag_list']), 5)
-
 
 class Test_Article(TestCase):
 
@@ -307,7 +306,6 @@ class Test_Comment(TestCase):
 class Test_New_Article(TestCase):
 
     def setUp(self):
-        self.get = reverse('ArticleCreate')
         User.objects.create(
             username="user",
             password="123"
@@ -327,6 +325,7 @@ class Test_New_Article(TestCase):
             url="https://www.youtube.com/watch?v=eKjmzHN_kSk&ab_channel=Farell",
             Author=AuthorObj
         )
+        self.get = reverse('ArticleCreate')
 
     def test_template(self):
         respanse = self.client.get(self.get)
@@ -349,6 +348,42 @@ class Test_New_Article(TestCase):
         }
         self.client.post(data)
         self.assertEqual(len(Article.objects.all()), 1)
+
+class Test_Edit(TestCase):
+
+    def setUp(self):
+        User.objects.create(
+            username="user",
+            password="123"
+        )
+        self.UserObj = User.objects.get(id=1)
+        Author.objects.create(
+            name='Pan',
+            surname='User',
+            User=self.UserObj
+        )
+        AuthorObj = Author.objects.get(id=1)
+        Article.objects.create(
+            title="title",
+            content="On the power of showing up and behavioral activation — Conventional wisdom says that positive "
+                    "thinking, enthusiasm, and inspiration are key to living a good and productive life. But that’s"
+                    " not entirely true, at least not",
+            url="https://www.youtube.com/watch?v=eKjmzHN_kSk&ab_channel=Farell",
+            Author=AuthorObj
+        )
+        self.get = reverse('ArticleUpdate', kwargs={"pk": 1})
+
+    def test_template(self):
+        respanse = self.client.get(self.get)
+        self.assertTemplateUsed(respanse, 'app/article_form.html')
+        self.assertEquals(respanse.status_code, 200)
+
+    def test_status(self):
+        respanse = self.client.get(self.get)
+        self.assertEquals(respanse.status_code, 200)
+
+    def test_get_url(self):
+        self.assertEquals(resolve(self.get).func.view_class,ArticleUpdateView)
 
 
 
