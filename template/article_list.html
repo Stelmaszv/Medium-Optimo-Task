@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="container">
+    {% for Article in object_list %}
+        <div class="offset-1 col-10">
+            <div class="row">
+                <h1><a style="color:black;text-decoration:none;" href="{% url 'ArticleDetail' Article.id %}">{{ Article.title }}</a></h1>
+            </div>
+            <div>
+                <div class="row" style="padding:10px;">
+                    <div class="col-4"><i>Author</i>      <b>{{ Article.Author }}</b></div>
+                    <div class="col-4"><i>Comments</i>    <b>{{ Article.comments_set.count }}</b></div>
+                    <div class="col-4"><i>Create At</i>   <b>{{ Article.create_at }}</b></div>
+                </div>
+            </div>
+            <p style="text-align: justify;">{{ Article.content }}</p>
+            {% for tag in Article.tags.all %}
+                <button class="btn btn-sm btn-outline-secondary" type="button">{{tag}}</button>
+            {% endfor %}
+        </div>
+    {% endfor %}
+    </div>
+{% endblock %}
