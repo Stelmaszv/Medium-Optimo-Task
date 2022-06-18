@@ -16,9 +16,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from app.views import ArticleListView
+from app.views import ArticleListView, TagsListView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('',ArticleListView.as_view(),name='Articles'),
+    path('tags',TagsListView.as_view(),name='Tags')
 ]
