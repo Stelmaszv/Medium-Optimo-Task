@@ -55,13 +55,16 @@ class Article(models.Model):
 
 class Comments(models.Model):
     content  = models.TextField(default='', null=False, blank=False)
-    Author   = models.ForeignKey(Author, on_delete=models.CASCADE, blank=False, null=False)
-    Article  = models.ForeignKey(Article, on_delete=models.CASCADE, blank=False, null=False)
+    Author   = models.ForeignKey(Author, on_delete=models.CASCADE, blank=False, null=True)
+    Article  = models.ForeignKey(Article, on_delete=models.CASCADE, blank=False, null=True)
     create_at = models.DateTimeField(auto_now=True)
 
     def save(self, *args, **kwargs):
-        super(Comments, self).save()
-        self.Article.Comments.add(self)
+        if self.Article:
+            super(Comments, self).save()
+            self.Article.Comments.add(self)
+        else:
+            super(Comments, self).save()
 
     def __str__(self):
         return  str(self.Author)+' - '+self.content

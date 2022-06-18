@@ -26,9 +26,10 @@ class NewComment(CreateView):
     success_url = '/'
 
     def form_valid(self,form):
-        form.instance.Article = Article.objects.get(id=self.kwargs['pk'])
-        form.instance.Author  = Author.objects.filter(User=self.request.user).get()
-        self.object = form.save()
+        if self.request.user.is_authenticated:
+            form.instance.Article = Article.objects.get(id=self.kwargs['pk'])
+            form.instance.Author  = Author.objects.filter(User=self.request.user).get()
+            self.object = form.save()
         return super().form_valid(form)
 
     def get_success_url(self):
