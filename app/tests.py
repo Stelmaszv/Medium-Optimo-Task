@@ -2,7 +2,7 @@ from django.contrib.auth import login
 from django.test import TestCase,Client
 from django.urls import reverse, resolve
 
-from app.views import ArticleListView, TagsListView, ArticleDetailView
+from app.views import ArticleListView, TagsListView, ArticleDetailView, NewComment, ArticleCreateView
 from .models import Article,Comments,Author,Tag
 from django.contrib.auth.models import User
 #model tests
@@ -282,6 +282,9 @@ class Test_Comment(TestCase):
         self.get = reverse('NewComment', kwargs={"pk": 1})
         self.ArticleObj = Article.objects.get(id=1)
 
+    def test_get_url(self):
+        self.assertEquals(resolve(self.get).func.view_class,NewComment)
+
     def test_template(self):
         respanse = self.client.get(self.get)
         self.assertTemplateUsed(respanse, 'app/comments_form.html')
@@ -299,6 +302,53 @@ class Test_Comment(TestCase):
         }
         self.client.post(data)
         self.assertEqual(len(self.ArticleObj.Comments.all()), 0)
+
+class Test_New_Article(TestCase):
+
+    def setUp(self):
+        self.get = reverse('ArticleCreate')
+        User.objects.create(
+            username="user",
+            password="123"
+        )
+        self.UserObj = User.objects.get(id=1)
+        Author.objects.create(
+            name='Pan',
+            surname='User',
+            User=self.UserObj
+        )
+        AuthorObj = Author.objects.get(id=1)
+        Article.objects.create(
+            title="title",
+            content="On the power of showing up and behavioral activation — Conventional wisdom says that positive "
+                    "thinking, enthusiasm, and inspiration are key to living a good and productive life. But that’s"
+                    " not entirely true, at least not",
+            url="https://www.youtube.com/watch?v=eKjmzHN_kSk&ab_channel=Farell",
+            Author=AuthorObj
+        )
+
+    def test_template(self):
+        respanse = self.client.get(self.get)
+        self.assertTemplateUsed(respanse, 'app/article_form.html')
+        self.assertEquals(respanse.status_code, 200)
+
+    def test_get_url(self):
+        self.assertEquals(resolve(self.get).func.view_class,ArticleCreateView)
+
+    def test_status(self):
+        respanse = self.client.get(self.get)
+        self.assertEquals(respanse.status_code, 200)
+
+    def test_add_Article(self):
+        data = {
+            'title':"title",
+            'content': "On the power of showing up and behavioral activation — Conventional wisdom",
+            'url':   "https://www.youtube.com/watch?v=eKjmzHN_kSk&ab_channel=Farell",
+        }
+        self.client.post(data)
+        self.assertEqual(len(Article.objects.all()), 1)
+
+
 
 
 
