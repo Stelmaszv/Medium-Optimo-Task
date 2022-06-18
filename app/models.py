@@ -48,7 +48,6 @@ class Article(models.Model):
 
             if self.url[i] and add == True:
                 code = code + self.url[i]
-        print(code)
         return code
 
     def __str__(self):
