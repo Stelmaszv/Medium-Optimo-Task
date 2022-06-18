@@ -295,6 +295,7 @@ class Test_Comment(TestCase):
         self.assertEquals(respanse.status_code, 200)
 
     def test_add_coment(self):
+        self.client.post('/admin/login/', {'username': 'user', 'password': '123'})
         data = {
             'content': "On the power of showing up and behavioral activation — Conventional wisdom says that positive "
                        "thinking, enthusiasm, and inspiration are key to living a good and productive life. But that’s"
@@ -340,6 +341,7 @@ class Test_New_Article(TestCase):
         self.assertEquals(respanse.status_code, 200)
 
     def test_add_Article(self):
+        self.client.post('/admin/login/', {'username': 'user', 'password': '123'})
         data = {
             'title':"title",
             'content': "On the power of showing up and behavioral activation — Conventional wisdom",

@@ -1,6 +1,6 @@
 from django.shortcuts import redirect
 from django.urls import reverse
-from django.views.generic import ListView, DetailView, CreateView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView
 
 from app.models import Article, Tag, Comments, Author
 
@@ -55,4 +55,14 @@ class ArticleCreateView(CreateView,BaseEdit):
 
     def form_valid(self, form):
         self.on_form_valid(form)
+        return super().form_valid(form)
+
+class ArticleUpdateView(UpdateView,BaseEdit):
+    fields = ['title','content','Tags','url','photo']
+    success_url = '/'
+    model = Article
+
+    def form_valid(self, form):
+        if self.can_edit():
+            self.on_form_valid(form)
         return super().form_valid(form)
