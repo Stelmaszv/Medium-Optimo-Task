@@ -1,3 +1,4 @@
+from django.shortcuts import redirect
 from django.urls import reverse
 from django.views.generic import ListView, DetailView, CreateView
 
@@ -34,3 +35,15 @@ class NewComment(CreateView):
 
     def get_success_url(self):
         return reverse('ArticleDetail',kwargs={'pk':self.kwargs['pk']})
+
+class BaseEdit:
+
+    def can_edit(self):
+        return self.object.Author.User == self.request.user
+
+    def on_form_valid(self,form):
+        if self.request.user.is_authenticated:
+            form.instance.Author = Author.objects.filter(User=self.request.user).get()
+            self.object = form.save()
+        else:
+            return redirect('/admin/login/')
