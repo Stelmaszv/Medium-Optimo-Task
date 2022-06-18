@@ -1,4 +1,7 @@
-from django.test import TestCase
+from django.test import TestCase,Client
+from django.urls import reverse, resolve
+
+from app.views import ArticleListView
 from .models import Article,Comments,Author,Tag
 from django.contrib.auth.models import User
 #model tests
@@ -129,6 +132,55 @@ class AuthorTest(TestCase):
         self.assertEqual(AuthorObj.surname, self.author_surname)
         self.assertEqual(AuthorObj.User, self.UserObj)
 
+
+#views_test
+class Test_ArticleList(TestCase):
+
+    genrate=6;
+
+    def setUp(self):
+        self.client=Client()
+        self.list=reverse('Articles')
+
+    def test_url(self):
+        self.assertEquals(resolve(self.list).func.view_class,ArticleListView)
+
+    def test_template(self):
+        respanse = self.client.get(self.list)
+        self.assertEquals(respanse.status_code,200)
+        self.assertTemplateUsed(respanse, 'article_list.html')
+
+    def generate_objects(self):
+        User.objects.create(
+            username="user",
+            password="123"
+        )
+        self.UserObj = User.objects.get(id=1)
+        Author.objects.create(
+            name='Pan',
+            surname='User',
+            User=self.UserObj
+        )
+        AuthorObj = Author.objects.get(id=1)
+
+        for el in range(0,self.genrate):
+            Article.objects.create(
+                title="title",
+                content="On the power of showing up and behavioral activation — Conventional wisdom says that positive "
+                        "thinking, enthusiasm, and inspiration are key to living a good and productive life. But that’s"
+                        " not entirely true, at least not",
+                url="https://www.youtube.com/watch?v=eKjmzHN_kSk&ab_channel=Farell",
+                Author = AuthorObj
+            )
+
+    def test_status(self):
+        respanse = self.client.get(self.list)
+        self.assertEqual(respanse.status_code, 200)
+
+    def test_render(self):
+        self.generate_objects()
+        respanse = self.client.get(self.list)
+        self.assertEqual(len(respanse.context['article_list']), 5)
 
 
 
