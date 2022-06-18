@@ -47,3 +47,12 @@ class BaseEdit:
             self.object = form.save()
         else:
             return redirect('/admin/login/')
+
+class ArticleCreateView(CreateView,BaseEdit):
+    fields = ['title', 'content', 'Tags', 'url', 'photo']
+    success_url = '/'
+    model = Article
+
+    def form_valid(self, form):
+        self.on_form_valid(form)
+        return super().form_valid(form)

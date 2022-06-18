@@ -17,7 +17,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path
 
-from app.views import ArticleListView, TagsListView, ArticleDetailView, NewComment
+from app.views import ArticleListView, TagsListView, ArticleDetailView, NewComment, ArticleCreateView
 from medium2 import settings
 
 urlpatterns = [
@@ -25,6 +25,7 @@ urlpatterns = [
     path(''                       ,ArticleListView.as_view(),name='Articles'),
     path('article/<int:pk>/'      ,ArticleDetailView.as_view(),name='ArticleDetail'),
     path('new_comment/<int:pk>/'  ,NewComment.as_view(),name='NewComment'),
+    path('article_create'         ,ArticleCreateView.as_view(),name='ArticleCreate'),
     path('tags'                   ,TagsListView.as_view(),name='Tags')
 ]
 
