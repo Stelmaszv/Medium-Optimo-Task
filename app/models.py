@@ -37,6 +37,19 @@ class Article(models.Model):
     photo     = models.ImageField(upload_to='images', null=True, blank=True)
     create_at = models.DateTimeField(auto_now=True)
 
+    @property
+    def get_you_tube_url(self):
+        code = ''
+        index = self.url.find("v=")
+        add = True
+        for i in range(index + 2, len(self.url)):
+            if self.url[i] == '&':
+                add = False
+
+            if self.url[i] and add == True:
+                code = code + self.url[i]
+        return code
+
     def __str__(self):
         return  self.title
 
