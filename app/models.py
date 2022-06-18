@@ -15,7 +15,7 @@ def url_validator(url):
 class Author(models.Model):
     name      = models.CharField(max_length=100,null=True,blank=True)
     surname   = models.CharField(max_length=100, null=True, blank=True)
-    User      = models.ForeignKey(AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True, null=True)
+    User      = models.ForeignKey(AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True, null=False)
 
     def __str__(self):
         return  self.name+' '+self.surname
@@ -30,7 +30,7 @@ class Tag(models.Model):
 class Article(models.Model):
     title     = models.CharField(max_length=200, null=True, blank=False)
     content   = models.TextField(default='', null=True, blank=False)
-    Author    = models.ForeignKey(Author, on_delete=models.CASCADE, blank=True, null=True)
+    Author    = models.ForeignKey(Author, on_delete=models.CASCADE, blank=True, null=False)
     Tags      = models.ManyToManyField(to='app.Tag', related_name='Tags', blank=True)
     Comments = models.ManyToManyField(to='app.Comments', related_name='Comments', blank=True)
     url       = models.CharField(max_length=200, null=True, blank=True,validators=[url_validator])
@@ -55,7 +55,7 @@ class Article(models.Model):
 
 class Comments(models.Model):
     content  = models.TextField(default='', null=False, blank=False)
-    Author   = models.ForeignKey(Author, on_delete=models.CASCADE, blank=False, null=True)
+    Author   = models.ForeignKey(Author, on_delete=models.CASCADE, blank=False, null=False)
     Article  = models.ForeignKey(Article, on_delete=models.CASCADE, blank=False, null=False)
     create_at = models.DateTimeField(auto_now=True)
 
