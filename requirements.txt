@@ -1,0 +1,9 @@
+﻿asgiref==3.5.2
+decorator==5.1.1
+Django==4.0.5
+django-crispy-forms==1.14.0
+MainApp==0.1
+Pillow==9.1.1
+sqlparse==0.4.2
+tzdata==2022.1
+validators==0.20.0
