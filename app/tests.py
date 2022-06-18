@@ -1,7 +1,7 @@
 from django.test import TestCase
 from .models import Article,Comments,Author,Tag
 from django.contrib.auth.models import User
-# Create your tests here.
+#model tests
 class ArticleTest(TestCase):
 
     def setUp(self):
@@ -74,21 +74,21 @@ class CommentsTest(TestCase):
             User=UserObj
         )
 
-        AuthorObj = Author.objects.get(id=1)
+        self.AuthorObj = Author.objects.get(id=1)
         Article.objects.create(
             title="title",
             content="On the power of showing up and behavioral activation — Conventional wisdom says that positive "
                     "thinking, enthusiasm, and inspiration are key to living a good and productive life. But that’s"
                     " not entirely true, at least not",
             url="https://www.youtube.com/watch?v=eKjmzHN_kSk&ab_channel=Farell",
-            Author = AuthorObj
+            Author = self.AuthorObj
         )
-        ArticleObject = Article.objects.get(title="title")
+        self.ArticleObject = Article.objects.get(title="title")
         self.comment_content='On the power of showing up and behavioral activation — Conventional wisdom says that positive'
         Comments.objects.create(
             content=self.comment_content,
-            Article=ArticleObject,
-            Author = AuthorObj
+            Article=self.ArticleObject,
+            Author = self.AuthorObj
         )
 
     def test_coment_add_to_relation(self):
@@ -98,6 +98,8 @@ class CommentsTest(TestCase):
     def test_Comments_model_create(self):
         CommentsObj = Comments.objects.get(id=1)
         self.assertEqual(CommentsObj.content, self.comment_content)
+        self.assertEqual(CommentsObj.Article, self.ArticleObject)
+        self.assertEqual(CommentsObj.Author, self.AuthorObj)
 
 class TagTest(TestCase):
     def test_Tags_model_create(self):
@@ -107,6 +109,25 @@ class TagTest(TestCase):
         )
         TagObj = Tag.objects.get(id=1)
         self.assertEqual(TagObj.tag_name, self.tag_name)
+
+class AuthorTest(TestCase):
+    def test_Author_model_create(self):
+        self.author_name="Pan"
+        self.author_surname = "User"
+        User.objects.create(
+            username="user",
+            password="123"
+        )
+        self.UserObj = User.objects.get(id=1)
+        Author.objects.create(
+            name=self.author_name,
+            surname=self.author_surname,
+            User=self.UserObj
+        )
+        AuthorObj = Author.objects.get(id=1)
+        self.assertEqual(AuthorObj.name, self.author_name)
+        self.assertEqual(AuthorObj.surname, self.author_surname)
+        self.assertEqual(AuthorObj.User, self.UserObj)
 
 
 
