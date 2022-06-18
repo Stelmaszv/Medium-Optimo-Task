@@ -1,7 +1,7 @@
 from django.test import TestCase,Client
 from django.urls import reverse, resolve
 
-from app.views import ArticleListView
+from app.views import ArticleListView,TagsListView
 from .models import Article,Comments,Author,Tag
 from django.contrib.auth.models import User
 #model tests
@@ -182,6 +182,35 @@ class Test_ArticleList(TestCase):
         respanse = self.client.get(self.list)
         self.assertEqual(len(respanse.context['article_list']), 5)
 
+class Test_Tag(TestCase):
 
+    genrate =6;
+
+    def setUp(self):
+        self.client = Client()
+        self.list = reverse('Tags')
+
+    def test_url(self):
+        self.assertEquals(resolve(self.list).func.view_class,TagsListView)
+
+    def test_template(self):
+        respanse = self.client.get(self.list)
+        self.assertEquals(respanse.status_code, 200)
+        self.assertTemplateUsed(respanse, 'tags_list.html')
+
+    def test_status(self):
+        respanse = self.client.get(self.list)
+        self.assertEqual(respanse.status_code, 200)
+
+    def generate_objects(self):
+        for el in range(0,self.genrate):
+            Tag.objects.create(
+                tag_name="Fajny"
+            )
+
+    def test_render(self):
+        self.generate_objects()
+        respanse = self.client.get(self.list)
+        self.assertEqual(len(respanse.context['tag_list']), 5)
 
 
