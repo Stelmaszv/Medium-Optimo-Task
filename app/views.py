@@ -1,3 +1,4 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.views.generic import ListView, DetailView, CreateView, UpdateView
@@ -21,16 +22,15 @@ class ArticleDetailView(DetailView):
     model = Article
     template_name = 'article.html'
 
-class NewComment(CreateView):
+class NewComment(LoginRequiredMixin,CreateView):
     fields = ['content']
     model = Comments
     success_url = '/'
 
     def form_valid(self,form):
-        if self.request.user.is_authenticated:
-            form.instance.Article = Article.objects.get(id=self.kwargs['pk'])
-            form.instance.Author  = Author.objects.filter(User=self.request.user).get()
-            self.object = form.save()
+        form.instance.Article = Article.objects.get(id=self.kwargs['pk'])
+        form.instance.Author  = Author.objects.filter(User=self.request.user).get()
+        self.object = form.save()
         return super().form_valid(form)
 
     def get_success_url(self):
@@ -42,13 +42,11 @@ class BaseEdit:
         return self.object.Author.User == self.request.user
 
     def on_form_valid(self,form):
-        if self.request.user.is_authenticated:
-            form.instance.Author = Author.objects.filter(User=self.request.user).get()
-            self.object = form.save()
-        else:
-            return redirect('/admin/login/')
+        form.instance.Author = Author.objects.filter(User=self.request.user).get()
+        self.object = form.save()
+        return redirect('/admin/login/')
 
-class ArticleCreateView(CreateView,BaseEdit):
+class ArticleCreateView(LoginRequiredMixin,CreateView,BaseEdit):
     fields = ['title', 'content', 'Tags', 'url', 'photo']
     success_url = '/'
     model = Article
@@ -57,7 +55,7 @@ class ArticleCreateView(CreateView,BaseEdit):
         self.on_form_valid(form)
         return super().form_valid(form)
 
-class ArticleUpdateView(UpdateView,BaseEdit):
+class ArticleUpdateView(LoginRequiredMixin,UpdateView,BaseEdit):
     fields = ['title','content','Tags','url','photo']
     success_url = '/'
     model = Article
