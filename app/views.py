@@ -1,6 +1,7 @@
-from django.views.generic import ListView, DetailView
+from django.urls import reverse
+from django.views.generic import ListView, DetailView, CreateView
 
-from app.models import Article, Tag
+from app.models import Article, Tag, Comments, Author
 
 
 class ArticleListView(ListView):
@@ -18,3 +19,17 @@ class TagsListView(ListView):
 class ArticleDetailView(DetailView):
     model = Article
     template_name = 'article.html'
+
+class NewComment(CreateView):
+    fields = ['content']
+    model = Comments
+    success_url = '/'
+
+    def form_valid(self,form):
+        form.instance.Article = Article.objects.get(id=self.kwargs['pk'])
+        form.instance.Author  = Author.objects.filter(User=self.request.user).get()
+        self.object = form.save()
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse('ArticleDetail',kwargs={'pk':self.kwargs['pk']})
