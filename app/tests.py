@@ -99,6 +99,15 @@ class CommentsTest(TestCase):
         CommentsObj = Comments.objects.get(id=1)
         self.assertEqual(CommentsObj.content, self.comment_content)
 
+class TagTest(TestCase):
+    def test_Tags_model_create(self):
+        self.tag_name="Fajny"
+        Tag.objects.create(
+            tag_name=self.tag_name
+        )
+        TagObj = Tag.objects.get(id=1)
+        self.assertEqual(TagObj.tag_name, self.tag_name)
+
 
 
 
