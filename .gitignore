@@ -3,4 +3,5 @@
 /images/
 .idea/
 app/migrations/
-app/__pycache/
+app/__pycache__/
+medium2/__pycache__/
