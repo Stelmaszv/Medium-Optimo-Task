@@ -284,14 +284,9 @@ class Test_Comment(TestCase):
     def test_get_url(self):
         self.assertEquals(resolve(self.get).func.view_class,NewComment)
 
-    def test_template(self):
-        respanse = self.client.get(self.get)
-        self.assertTemplateUsed(respanse, 'app/comments_form.html')
-        self.assertEquals(respanse.status_code, 200)
-
     def test_status(self):
         respanse = self.client.get(self.get)
-        self.assertEquals(respanse.status_code, 200)
+        self.assertEquals(respanse.status_code, 302)
 
     def test_add_coment(self):
         self.client.post('/admin/login/', {'username': 'user', 'password': '123'})
@@ -327,17 +322,12 @@ class Test_New_Article(TestCase):
         )
         self.get = reverse('ArticleCreate')
 
-    def test_template(self):
-        respanse = self.client.get(self.get)
-        self.assertTemplateUsed(respanse, 'app/article_form.html')
-        self.assertEquals(respanse.status_code, 200)
-
     def test_get_url(self):
         self.assertEquals(resolve(self.get).func.view_class,ArticleCreateView)
 
     def test_status(self):
         respanse = self.client.get(self.get)
-        self.assertEquals(respanse.status_code, 200)
+        self.assertEquals(respanse.status_code, 302)
 
     def test_add_Article(self):
         self.client.post('/admin/login/', {'username': 'user', 'password': '123'})
@@ -373,14 +363,9 @@ class Test_Edit(TestCase):
         )
         self.get = reverse('ArticleUpdate', kwargs={"pk": 1})
 
-    def test_template(self):
-        respanse = self.client.get(self.get)
-        self.assertTemplateUsed(respanse, 'app/article_form.html')
-        self.assertEquals(respanse.status_code, 200)
-
     def test_status(self):
         respanse = self.client.get(self.get)
-        self.assertEquals(respanse.status_code, 200)
+        self.assertEquals(respanse.status_code, 302)
 
     def test_get_url(self):
         self.assertEquals(resolve(self.get).func.view_class,ArticleUpdateView)
