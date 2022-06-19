@@ -1,4 +1,3 @@
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect
 from django.urls import reverse
@@ -39,7 +38,6 @@ class NewComment(LoginRequiredMixin,CreateView):
 
 class BaseEdit:
 
-    @login_required
     def can_edit(self):
         return self.object.Author.User == self.request.user
 
@@ -53,7 +51,6 @@ class ArticleCreateView(LoginRequiredMixin,CreateView,BaseEdit):
     success_url = '/'
     model = Article
 
-    @login_required
     def form_valid(self, form):
         self.on_form_valid(form)
         return super().form_valid(form)
@@ -63,7 +60,6 @@ class ArticleUpdateView(LoginRequiredMixin,UpdateView,BaseEdit):
     success_url = '/'
     model = Article
 
-    @login_required
     def form_valid(self, form):
         if self.can_edit():
             self.on_form_valid(form)
