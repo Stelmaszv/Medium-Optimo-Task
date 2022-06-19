@@ -2,5 +2,5 @@
 /db.sqlite3
 /images/
 .idea/
-/app/migrations/
-/app/__pycache/
+app/migrations/
+app/__pycache/
