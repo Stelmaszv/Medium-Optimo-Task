@@ -30,7 +30,7 @@ class Tag(models.Model):
 class Article(models.Model):
     title     = models.CharField(max_length=200, null=True, blank=False)
     content   = models.TextField(default='', null=True, blank=False)
-    Author    = models.ForeignKey(Author, on_delete=models.CASCADE, blank=True, null=False)
+    Author    = models.ForeignKey(Author, on_delete=models.CASCADE, blank=True, null=True)
     Tags      = models.ManyToManyField(to='app.Tag', related_name='Tags', blank=True)
     Comments = models.ManyToManyField(to='app.Comments', related_name='Comments', blank=True)
     url       = models.CharField(max_length=200, null=True, blank=True,validators=[url_validator])
